@@ -1,7 +1,8 @@
+import { Controller } from './controllers/music';
 import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
-import routes from './routes/music';
+import Repository from './repositories/repository_mock';
 
 const router: Express = express();
 
@@ -19,14 +20,13 @@ router.use((req, res, next) => {
     next();
 });
 
-router.use('/', routes);
 
-router.use((req, res, next) => {
-    const error = new Error('not found');
-    return res.status(404).json({
-        message: error.message
-    });
-});
+const repo = new Repository();
+const controller = new Controller(repo);
+
+router.get('/musics', controller.getAllMusics);
+router.put('/musics', controller.updateMusic);
+router.post('/musics', controller.addMusic);
 
 const httpServer = http.createServer(router);
 const PORT: any = process.env.PORT ?? 6060;

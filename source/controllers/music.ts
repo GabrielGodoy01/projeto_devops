@@ -1,39 +1,34 @@
 import { Request, Response, NextFunction } from 'express';
 import axios, { AxiosResponse } from 'axios';
+import Music from '../models/music'
+import Repository from '../repositories/repository_mock'
+const {v4: uuidv4} = require('uuid')
+export class Controller {
 
-interface Music {
-    id: Number;
-    name: String;
-    review: Number;
+    repository : Repository;
+
+    constructor(repository : Repository) {
+        this.repository = repository;
+    }
+
+    getAllMusics = async (req: Request, res: Response, next: NextFunction) => {
+        return res.status(200).json(this.repository.getAllMusics());
+    };
+
+    updateMusic = async (req: Request, res: Response, next: NextFunction) => {
+        if(req.body.review > 5){
+            res.status(400).send('Valor inválido, maior do que 5.')
+            return 
+        }
+        const musicToUpdate = this.repository.getMusicByName(req.body.name);
+        musicToUpdate!.review = req.body.review;
+        this.repository.updateReview(musicToUpdate!);
+        res.status(200).json(musicToUpdate);
+    };
+
+    addMusic = async (req: Request, res: Response, next: NextFunction) => {
+        const music = new Music(uuidv4(), req.body.name, 0);
+        this.repository.createMusic(music);
+        res.status(200).json(music);
+    };
 }
-
-const getAllMusics = async (req: Request, res: Response, next: NextFunction) => {
-    let result: AxiosResponse = await axios.get(`https://jsonplaceholder.typicode.com/musics`);
-    let musics: [Music] = result.data;
-    return res.status(200).json({
-        message: musics
-    });
-};
-
-const updateMusic = async (req: Request, res: Response, next: NextFunction) => {
-    let id: string = req.params.id;
-    let review: string = req.body.body ?? null;
-    let response: AxiosResponse = await axios.put(`https://jsonplaceholder.typicode.com/musics/${id}`, {
-        ...(review && { review })
-    });
-    return res.status(200).json({
-        message: response.data
-    });
-};
-
-const addMusic = async (req: Request, res: Response, next: NextFunction) => {
-    let name: string = req.body.title;
-    let response: AxiosResponse = await axios.post(`https://jsonplaceholder.typicode.com/musics`, {
-        name,
-    });
-    return res.status(200).json({
-        message: response.data
-    });
-};
-
-export default { getAllMusics, updateMusic, addMusic };
