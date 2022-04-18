@@ -35,6 +35,10 @@ class Controller {
             this.repository.createMusic(music);
             res.status(200).json(music);
         });
+        this.pingPong = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            res.status(200).send('Pong');
+            return;
+        });
         this.repository = repository;
     }
 }

@@ -31,4 +31,9 @@ export class Controller {
         this.repository.createMusic(music);
         res.status(200).json(music);
     };
+
+    pingPong = async (req: Request, res: Response, next: NextFunction) => {
+        res.status(200).send('Pong')
+            return 
+    };
 }

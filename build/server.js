@@ -25,6 +25,7 @@ router.use((req, res, next) => {
 const repo = new repository_mock_1.default();
 const controller = new music_1.Controller(repo);
 router.get('/musics', controller.getAllMusics);
+router.get('/musics/ping', controller.pingPong);
 router.put('/musics', controller.updateMusic);
 router.post('/musics', controller.addMusic);
 const httpServer = http_1.default.createServer(router);

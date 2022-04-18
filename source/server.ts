@@ -25,6 +25,7 @@ const repo = new Repository();
 const controller = new Controller(repo);
 
 router.get('/musics', controller.getAllMusics);
+router.get('/musics/ping', controller.pingPong);
 router.put('/musics', controller.updateMusic);
 router.post('/musics', controller.addMusic);
 
